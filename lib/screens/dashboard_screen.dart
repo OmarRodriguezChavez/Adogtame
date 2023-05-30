@@ -1,9 +1,17 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:proyectofinal_cont_rdz/firebase/email_auth.dart';
 import 'package:proyectofinal_cont_rdz/firebase/facebook_firebase.dart';
+import 'package:proyectofinal_cont_rdz/firebase/google_auth.dart';
 import 'package:proyectofinal_cont_rdz/models/user_model.dart';
+import 'package:proyectofinal_cont_rdz/provider/flags_provider.dart';
 import 'package:proyectofinal_cont_rdz/provider/theme_provider.dart';
 import 'package:proyectofinal_cont_rdz/screens/list_post.dart';
+import 'package:proyectofinal_cont_rdz/utils/color_itols.dart';
 
 
 class DashboardScreen extends StatefulWidget {
@@ -13,26 +21,38 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
+ValueNotifier<bool> imageChange = ValueNotifier<bool>(false);
 class _DashboardScreenState extends State<DashboardScreen> {
   bool isDarkModeEnabled = false;
   FaceAuth faceAuth= FaceAuth();
-   UserModel? user;
-
+  EmailAuth emailAuth= EmailAuth();
+  GoogleAuth googleAuth=GoogleAuth();
+  UserModel? user;
+  //User? users;
+  File? imagen;
+/*@override
+  void initState() {
+    super.initState();
+    //users = FirebaseAuth.instance.currentUser;
+  }*/
   @override
   Widget build(BuildContext context) {
-     if(ModalRoute.of(context)!.settings.arguments!=null){
-      user = ModalRoute.of(context)!.settings.arguments as UserModel;
-    }
+    
     //ColorProvider colorApp = Provider.of<ColorProvider>(context);
     ThemeProvider theme = Provider.of<ThemeProvider>(context);
+    FlagsProvider flag = Provider.of<FlagsProvider>(context);
+
+    if(ModalRoute.of(context)!.settings.arguments!=null){
+      user = ModalRoute.of(context)!.settings.arguments as UserModel;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Adogtame'),
-        backgroundColor: Color.fromARGB(147, 210, 255, 7) //colorApp.getColorBar(),
+        backgroundColor: hexStringToColor("CB2B93")//Color.fromARGB(146, 234, 7, 255) //colorApp.getColorBar(),
       ),
       body: ListPost(),//const ListFavoritesCloud(), //ListPost(),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Color.fromARGB(147, 210, 255, 7),
+        backgroundColor: hexStringToColor("CB2B93"),//Color.fromARGB(146, 234, 7, 255),
         onPressed: () {
           Navigator.pushNamed(context, '/add').then((value) {
             setState(() {});
@@ -44,18 +64,27 @@ class _DashboardScreenState extends State<DashboardScreen> {
       drawer: Drawer(
         child: ListView(
           children: [
-            const UserAccountsDrawerHeader(
+             ValueListenableBuilder(
+              valueListenable: imageChange,
+              builder: (context, value, child) {
+              return UserAccountsDrawerHeader(
+                
                 decoration:
-                    BoxDecoration(color: Color.fromARGB(255, 36, 159, 236)
+                    BoxDecoration(color: Color.fromARGB(255, 102, 24, 81)
                         //Color(colors/*colorApp.getColorBar()*/),
                         ),
                 currentAccountPicture: CircleAvatar(
-                  backgroundImage:NetworkImage('url')// NetworkImage(user!.photoUrl.toString()),
+                  
+                  backgroundImage: FirebaseAuth.instance.currentUser!.photoURL !=null//user?.photoUrl != null
+                  ? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!)
+                  : AssetImage('assets/avatar.png') as ImageProvider,
                 ),
-                accountName: Text(''),//Text(user!.name.toString()),
-                accountEmail:Text('')),// Text(user!.email.toString())),
+               accountName: Text(FirebaseAuth.instance.currentUser!.displayName!),//Text(_credentials),//Text(user!.name.toString()),
+                accountEmail:Text(FirebaseAuth.instance.currentUser!.email!));}),//Text(_mail)),// Text(user!.email.toString())),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/edit');
+              },
               title: const Text('Perfil'),
               subtitle: const Text('Edit Perfil'),
               leading: const Icon(Icons.person),
@@ -90,9 +119,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             ListTile(
               onTap: () {
-                Navigator.pushNamed(context, '/logout');
+                emailAuth.signOut();
+                Navigator.pushNamed(context, '/login');
               },
-              title: const Text('Cerrar Sesión'),
+              title: const Text('Logout'),
               leading: const Icon(Icons.logout),
               trailing: const Icon(
                 Icons.chevron_right,

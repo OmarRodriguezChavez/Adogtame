@@ -2,10 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:proyectofinal_cont_rdz/firebase/facebook_firebase.dart';
+import 'package:proyectofinal_cont_rdz/firebase/google_auth.dart';
 import 'package:proyectofinal_cont_rdz/screens/dashboard_screen.dart';
 import 'package:proyectofinal_cont_rdz/screens/home_screen.dart';
 import 'package:proyectofinal_cont_rdz/screens/reset_password.dart';
 import 'package:proyectofinal_cont_rdz/screens/signup_screen.dart';
+import 'package:proyectofinal_cont_rdz/screens/verify_screen.dart';
 import 'package:proyectofinal_cont_rdz/utils/color_itols.dart';
 import 'package:proyectofinal_cont_rdz/widgets/reusable_widget.dart';
 import 'package:social_login_buttons/social_login_buttons.dart';
@@ -20,11 +22,18 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   String userEmail = "";
   bool isLoading = false;
+  User? user;
   /*EmailAuth emailAuth=EmailAuth();
   GoogleAuth googleAuth= GoogleAuth();*/
   FaceAuth faceAuth= FaceAuth();
+  GoogleAuth googleAuth=GoogleAuth();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +52,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 20, MediaQuery.of(context).size.height * 0.2, 20, 0),
             child: Column(
               children: <Widget>[
-                logoWidget("assets/pirito.jpeg"),
+                logoWidget("assets/piritop.png"),
                 const SizedBox(
                   height: 30,
                 ),
@@ -62,17 +71,48 @@ class _SignInScreenState extends State<SignInScreen> {
                   FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: _emailTextController.text,
-                          password: _passwordTextController.text)
-                      .then((value) {
+                          password: _passwordTextController.text).then((value){
+                          //user!.emailVerified 
+                          /*?*/ Navigator.pushNamed(context, '/dash');
+                          //: Navigator.pushNamed(context, '/verify');}).onError((error, stackTrace) {
+                            //print("Error ${error.toString()}");
+                          });
+                          
+                          /*if(user!.emailVerified)
+                          {
+                             Navigator.pushNamed(context, '/dash');
+                          }
+                          else{
+                            Navigator.pushNamed(context, '/verify');
+                          })*/
+                     /*.then((value) {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => DashboardScreen()));
+                        MaterialPageRoute(builder: (context) => SignInScreen()));
                   }).onError((error, stackTrace) {
                     print("Error ${error.toString()}");
-                  });
+                  });*/
                 }),
                 signUpOption(),
+                const SizedBox(
+                  height: 15,
+                ),
                 SocialLoginButton(
-                  buttonType: SocialLoginButtonType.google, onPressed: () {}),
+                  buttonType: SocialLoginButtonType.google, onPressed: () 
+                   async{
+        isLoading=true;
+        setState(() {});
+        googleAuth.signInWithGoogle().then((value) {
+         if(value.name!=null){
+             Navigator.pushNamed(context, '/dash',arguments:value);
+             isLoading=false;
+          }else{
+            isLoading=false;
+            SnackBar(content: Text('Verifica tus credenciales'),);
+          }
+          setState(() {});
+        });
+      }
+                  ),
                 const SizedBox(
                   height: 20,
                 ),

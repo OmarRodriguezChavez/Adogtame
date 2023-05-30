@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:proyectofinal_cont_rdz/provider/flags_provider.dart';
+import 'package:proyectofinal_cont_rdz/provider/font_provider.dart';
 import 'package:proyectofinal_cont_rdz/provider/theme_provider.dart';
 import 'package:proyectofinal_cont_rdz/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider(tema, context)),
         ChangeNotifierProvider(create: (_) => FlagsProvider()),
+        //ChangeNotifierProvider(create: (_) => FontProvider()),
         //ChangeNotifierProvider(create: (_) => ColorProvider(colorApp, context)),
       ],
       child: PMSNApp(),

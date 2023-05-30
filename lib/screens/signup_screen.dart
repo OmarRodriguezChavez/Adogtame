@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:proyectofinal_cont_rdz/firebase/email.auth.dart';
+import 'package:proyectofinal_cont_rdz/firebase/email_auth.dart';
+import 'package:proyectofinal_cont_rdz/firebase/facebook_firebase.dart';
+import 'package:proyectofinal_cont_rdz/firebase/google_auth.dart';
 import 'package:proyectofinal_cont_rdz/screens/home_screen.dart';
 import 'package:proyectofinal_cont_rdz/utils/color_itols.dart';
 
@@ -89,6 +91,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
 //import 'package:psmna10/provider/color_provider.dart';
 import 'package:social_login_buttons/social_login_buttons.dart';
+import 'package:proyectofinal_cont_rdz/utils/color_itols.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -98,56 +101,39 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  User? user;
   TextEditingController emailUser = TextEditingController();
   TextEditingController passwordUser = TextEditingController();
+  TextEditingController name=TextEditingController();
+  TextEditingController lastnam=TextEditingController();
+  String? username;
   EmailAuth emailAuth = EmailAuth();
   final ImagePicker _picker = ImagePicker();
   final _FormKey = GlobalKey<FormState>();
+  bool isLoading = false;
   PickedFile? _imageFile;
-  final firstname = TextFormField(
-    autovalidateMode: AutovalidateMode.onUserInteraction,
-    decoration: const InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
-        ),
-        hintText: 'First Name',
-        labelText: 'First name',
-        prefixIcon: Icon(Icons.person)),
-    validator: MultiValidator(
-      [RequiredValidator(errorText: 'Required*')],
-    ),
-  );
+  FaceAuth faceAuth= FaceAuth();
+  GoogleAuth googleAuth=GoogleAuth();
+
 
   
  
-  final lastname = TextFormField(
-    autovalidateMode: AutovalidateMode.onUserInteraction,
-    decoration: const InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(10),
-          ),
-        ),
-        hintText: 'Last Name',
-        labelText: 'Last name',
-        prefixIcon: Icon(Icons.person)),
-    validator: MultiValidator(
-      [RequiredValidator(errorText: 'Required*')],
-    ),
-  );
+  
   final spaceHorizont = SizedBox(height: 20);
-
+@override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser;
+  }
   @override
   Widget build(BuildContext context) {
     //ColorProvider colorApp = Provider.of<ColorProvider>(context);
     //_imageFile!;
-
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
-        backgroundColor: Color.fromARGB(255, 246, 148, 171),//colorApp.getColorBar(),
+        backgroundColor: hexStringToColor("CB2B93"),//Color.fromARGB(255, 246, 148, 171),//colorApp.getColorBar(),
         //Color.fromARGB(255, 246, 148, 171),
       ),
       body: Container(
@@ -161,9 +147,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 imageProfile(),
                 spaceHorizont,
                 spaceHorizont,
-                firstname,
+                TextFormField(
+    autovalidateMode: AutovalidateMode.onUserInteraction,
+    controller: name,
+    decoration: const InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+        hintText: 'First Name',
+        labelText: 'First name',
+        prefixIcon: Icon(Icons.person)),
+    validator: MultiValidator(
+      [RequiredValidator(errorText: 'Required*')],
+    ),
+  ),
                 spaceHorizont,
-                lastname,
+                TextFormField(
+    autovalidateMode: AutovalidateMode.onUserInteraction,
+    controller: lastnam,
+    decoration: const InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+        ),
+        hintText: 'Last Name',
+        labelText: 'Last name',
+        prefixIcon: Icon(Icons.person)),
+    validator: MultiValidator(
+      [RequiredValidator(errorText: 'Required*')],
+    ),
+  ),
                 spaceHorizont,
                 TextFormField(
                   controller: emailUser,
@@ -205,7 +221,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 spaceHorizont,
                 TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 246, 148, 171),//colorApp.getColorBar(),
+                    backgroundColor: hexStringToColor("CB2B93"),//Color.fromARGB(255, 246, 148, 171),//colorApp.getColorBar(),
                     //Color.fromARGB(255, 246, 148, 171),
                     foregroundColor: Color.fromARGB(255, 29, 4, 4),
                     padding: const EdgeInsets.all(16.0),
@@ -213,11 +229,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   onPressed: () {
                     if (_FormKey.currentState!.validate() == true) {
-                      emailAuth.registerWithEmailAndPassword(
+                      try{
+                          username=name.text+' '+lastnam.text;
+                          emailAuth.registerWithEmailAndPassword(
                           email: emailUser.text,
-                          password: passwordUser.text);
-                      Navigator.pushNamed(context, '/dash');
-                    }
+                          password: passwordUser.text,
+                          displayName: username!).then((value) {
+                          FirebaseAuth.instance.currentUser!.updateDisplayName(username);
+          if (value) {
+            //user!.sendEmailVerification();
+            //user!.displayName!=username.text;
+            Navigator.pushNamed(context, '/verify');
+          }
+        });
+      } catch (e) {
+        AlertDialog(
+          title: Text("Error"),
+          content: Text("Ocurrió un error al procesar la información, por favor, vuelve a intentarlo"),
+          actions: [
+            TextButton(onPressed: (){MaterialPageRoute(builder: (context)=> RegisterScreen());}, child: Text('Aceptar'))
+          ],
+        );
+      }
+    } else {
+      AlertDialog(
+          title: Text("Error"),
+          content: Text("Verifica que los datos sean correctos."),
+          actions: [
+            TextButton(onPressed: (){MaterialPageRoute(builder: (context)=> RegisterScreen());}, child: Text('Aceptar'))
+          ],
+        );
+    }
+                      
+                      
+                    
 
                     /*(_FormKey.currentState?.validate()) == true
             ? emailAuth.createUserWithEmailAndPassword(email: emailUser.text, password: passwordUser.text);
@@ -225,7 +270,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
             : print("Button pressed");*/
                   },
                   child: const Text("Register"),
-                )
+                ),
+                const SizedBox(height: 15,),
+                const Text('Or'),
+                const SizedBox(height: 15,),
+                SocialLoginButton(
+                  buttonType: SocialLoginButtonType.google, onPressed: () 
+                   async{
+        isLoading=true;
+        setState(() {});
+        googleAuth.registerWithGoogle().then((value) {
+         if(value ==1){
+             Navigator.pushNamed(context, '/dash',arguments:value);
+             isLoading=false;
+          }else{
+            isLoading=false;
+            SnackBar(content: Text('Verifica tus credenciales'),);
+          }
+          setState(() {});
+        });
+      }
+                  ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SocialLoginButton(
+      buttonType: SocialLoginButtonType.facebook,
+      onPressed: () async{
+        isLoading=true;
+        setState(() {});
+        faceAuth.signUpWithFacebook().then((value) {
+         if(value==1){
+             Navigator.pushNamed(context, '/dash',arguments:value);
+             isLoading=false;
+          }else{
+            isLoading=false;
+            SnackBar(content: Text('Verifica tus credenciales'),);
+          }
+          setState(() {});
+        });
+      },
+    )
+
               ],
             ),
           ),

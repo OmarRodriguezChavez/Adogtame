@@ -1,6 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:proyectofinal_cont_rdz/firebase/post_firebase.dart';
+import 'package:proyectofinal_cont_rdz/provider/font_provider.dart';
+import 'package:proyectofinal_cont_rdz/provider/theme_provider.dart';
 
 class ListPost extends StatefulWidget {
   const ListPost({super.key});
@@ -11,8 +15,13 @@ class ListPost extends StatefulWidget {
 
 class _ListPostState extends State<ListPost> {
   PostFirebase _firebase = PostFirebase();
+  
+  
   @override
   Widget build(BuildContext context) {
+    //FontProvider fonts = Provider.of<FontProvider>(context);
+    //var font=fonts.getFontBar;
+    var google=GoogleFonts;
     return Scaffold(
       /*margin: EdgeInsets.all(10),
       height: 250,
@@ -127,8 +136,14 @@ class _ListPostState extends State<ListPost> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           //Image(image: snapshot.data!.docs[index].get('image'))
-                         Image.network(snapshot.data!.docs[index].get('image'),
-                         height: 300,width: 350,)
+                          CachedNetworkImage(
+                            imageUrl: snapshot.data!.docs[index].get('image'),
+                                                width: 300,
+                                                height: 250,
+                                                fit: BoxFit.cover,
+                          ),
+                         //Image.network(snapshot.data!.docs[index].get('image'),
+                         //height: 300,width: 350,)
                         ],
                       ),
                      // SizedBox(height: 5,),
@@ -143,11 +158,12 @@ class _ListPostState extends State<ListPost> {
                                 'age': snapshot.data!.docs[index].get('age'),
                                 'talla': snapshot.data!.docs[index].get('talla'),
                                 'raza': snapshot.data!.docs[index].get('raza'),
-                                'sexo': snapshot.data!.docs[index].get('sexo'),
+                                'Sexo': snapshot.data!.docs[index].get('Sexo'),
+                                'contact': snapshot.data!.docs[index].get('contact'),
                               });
 
                             },
-                            icon: const Icon(Icons.add),),
+                            icon: const Icon(Icons.favorite),),
                         IconButton(
                             onPressed: () {
                               showDialog(
@@ -172,6 +188,36 @@ class _ListPostState extends State<ListPost> {
                               );
                             },
                             icon: const Icon(Icons.delete)),
+                        IconButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('Contacto'),
+                                  content:
+                                  Column(
+                                    children: [
+                                      const Text('¡Llamanos!'),
+                                      Text(snapshot.data!.docs[index].get('contact'))
+                                    ],
+                                  ),
+                                      
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          _firebase.delPost(
+                                              snapshot.data!.docs[index].id);
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Sí')),
+                                    TextButton(
+                                        onPressed: () {},
+                                        child: const Text('No'))
+                                  ],
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.contact_emergency)),
                       ],
                     )
                    ],
