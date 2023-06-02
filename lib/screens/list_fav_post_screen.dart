@@ -7,24 +7,28 @@ import 'package:proyectofinal_cont_rdz/firebase/post_firebase.dart';
 import 'package:proyectofinal_cont_rdz/provider/font_provider.dart';
 import 'package:proyectofinal_cont_rdz/provider/theme_provider.dart';
 
-class ListPost extends StatefulWidget {
-  const ListPost({super.key});
+class ListFavPost extends StatefulWidget {
+  const ListFavPost({super.key});
 
   @override
-  State<ListPost> createState() => _ListPostState();
+  State<ListFavPost> createState() => _ListFavPostState();
 }
 
-class _ListPostState extends State<ListPost> {
-  PostFirebase _firebase = PostFirebase();
-  FavFirebase _fav = FavFirebase();
+class _ListFavPostState extends State<ListFavPost> {
+  FavFirebase _firebase = FavFirebase();
+  //FavFirebase _fav = FavFirebase();
   Color primarycolor=Colors.blue;
-  ValueNotifier<bool> isfav = ValueNotifier<bool>(false);
+  ValueNotifier<bool> isfav = ValueNotifier<bool>(true);
   
   
   @override
   Widget build(BuildContext context) {
     var google=GoogleFonts;
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Mis favoritos'),
+        //backgroundColor: hexStringToColor("CB2B93")//Color.fromARGB(146, 234, 7, 255) //colorApp.getColorBar(),
+      ),
       body: StreamBuilder(
         stream: _firebase.getAllPosts(),
         builder: (context, snapshot) {
@@ -145,16 +149,21 @@ class _ListPostState extends State<ListPost> {
                       Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        /*ValueListenableBuilder(
+                        ValueListenableBuilder(
                           valueListenable: isfav, 
                           builder: (context, value, child){
                             return IconButton(
                             onPressed: () {
                               isfav.value= !isfav.value;
+                              if(isfav.value ==false)
+                              {
+                                _firebase.delPost(snapshot.data!.docs[index].id);
+                              }
+                              
+                              /*isfav.value= !isfav.value;
                               if(isfav.value)
                               {
                                 _fav.insPost({
-                                  'id':snapshot.data!.docs[index].get('id'),
                                 'name': snapshot.data!.docs[index].get('name'),
                                 'image': snapshot.data!.docs[index].get('image'),
                                 'age': snapshot.data!.docs[index].get('age'),
@@ -163,18 +172,17 @@ class _ListPostState extends State<ListPost> {
                                 'Sexo': snapshot.data!.docs[index].get('Sexo'),
                                 'contact': snapshot.data!.docs[index].get('contact'),
                               });
-                              }
-                              if(isfav.value == false){
-                                 _fav.delPost(snapshot.data!.docs[index].id);
-                              }   
+                              }else{
+                                _fav.delPost(snapshot.data!.docs[index].id);
+                              } */  
                               
                             },
                             icon: isfav.value ==true
                             ? const Icon(Icons.favorite)
                             : const Icon(Icons.favorite_outline));
-                          }),*/
+                          }),
                         
-                        /*IconButton(
+                        IconButton(
                             onPressed: () {
                               showDialog(
                                 context: context,
@@ -185,7 +193,7 @@ class _ListPostState extends State<ListPost> {
                                   actions: [
                                     TextButton(
                                         onPressed: () {
-                                          _fav.delPost(
+                                          _firebase.delPost(
                                               snapshot.data!.docs[index].id);
                                           Navigator.pop(context);
                                         },
@@ -197,7 +205,7 @@ class _ListPostState extends State<ListPost> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.delete)),*/
+                            icon: const Icon(Icons.delete)),
                         IconButton(
                             onPressed: () {
                               AlertDialog alert = AlertDialog(

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,196 +17,176 @@ class AddPostScreen extends StatefulWidget {
 }
 
 class _AddPostScreenState extends State<AddPostScreen> {
-  PickedFile? _imageFile;
     ValueNotifier<XFile?> image = ValueNotifier<XFile?>(null);
     
     final name = TextEditingController();
     final raza = TextEditingController();
     final talla = TextEditingController();
     final sexo = TextEditingController();
-    final img = TextEditingController();
     final age = TextEditingController();
     final contact = TextEditingController();
     String? url;
     PostFirebase _firebase = PostFirebase();
     final ImagePicker _picker = ImagePicker();
+    int? intvalue;
   @override
   Widget build(BuildContext context) {
-    //final ImagePicker _picker = ImagePicker();
     FlagsProvider flag = Provider.of<FlagsProvider>(context);
     return Scaffold(
       body: Center(
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.all(20),
-          height: 560,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color:Color.fromARGB(255, 205, 153, 207), border: Border.all(color: Colors.black)),
-          child: Column(
-            //mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Name'),
-              TextFormField(
-                controller: name,
-                decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                Radius.circular(10),
+        child: SingleChildScrollView(
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(20),
+            height: 750,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color:Color.fromARGB(255, 205, 153, 207), border: Border.all(color: Colors.black)),
+            child: Column(
+              //mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Name'),
+                TextFormField(
+                  controller: name,
+                  decoration: const InputDecoration(
+                  border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                  ),
                 ),
+                hintText: 'Name',
+                labelText: 'Name',
               ),
-              hintText: 'Name',
-              labelText: 'Name',
+                ),
+                SizedBox(height: 15,),
+                Text('Sexo'),
+                TextFormField(
+                  controller: sexo,
+                  decoration: const InputDecoration(
+          border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+          Radius.circular(10),
+          ),
+              ),
+              hintText: 'Sexo',
+              labelText: 'Sexo',
             ),
-                
-                //maxLines: 8,
-              
+                ),
+                SizedBox(height: 15,),
+                Text('Talla'),
+                TextFormField(
+                  controller: talla,
+                  decoration: const InputDecoration(
+          border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+          Radius.circular(10),
+          ),
               ),
-              SizedBox(height: 15,),
-              Text('Sexo'),
-              TextFormField(
-                controller: sexo,
-                decoration: const InputDecoration(
-        border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-        Radius.circular(10),
-        ),
-      ),
-      hintText: 'Sexo',
-      labelText: 'Sexo',
-    ),
+              hintText: 'Talla',
+              labelText: 'Talla',
+            ),
+                ),
+                SizedBox(height: 15,),
+                Text('Edad'),
+                TextFormField(
+                  controller: age,
+                  decoration: const InputDecoration(
+          border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+          Radius.circular(10),
+          ),
               ),
-              SizedBox(height: 15,),
-              Text('Talla'),
-              TextFormField(
-                controller: talla,
-                decoration: const InputDecoration(
-        border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-        Radius.circular(10),
-        ),
-      ),
-      hintText: 'Talla',
-      labelText: 'Talla',
-    ),
+              hintText: 'Age',
+              labelText: 'Age',
+            ),
+                ),
+                SizedBox(height: 15,),
+                Text('Raza'),
+                TextFormField(
+                  controller: raza,
+                  decoration: const InputDecoration(
+          border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+          Radius.circular(10),
+          ),
               ),
-              SizedBox(height: 15,),
-              Text('Edad'),
-              TextFormField(
-                controller: age,
-                decoration: const InputDecoration(
-        border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-        Radius.circular(10),
-        ),
-      ),
-      hintText: 'Age',
-      labelText: 'Age',
-    ),
+              hintText: 'Raza',
+              labelText: 'Raza',
+            ),
+                ),
+                SizedBox(height: 15,),
+                Text('Contacto'),
+                TextFormField(
+                  controller: contact,
+                  decoration: const InputDecoration(
+          border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+          Radius.circular(10),
+          ),
               ),
-              SizedBox(height: 15,),
-              Text('Raza'),
-              TextFormField(
-                controller: raza,
-                decoration: const InputDecoration(
-        border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-        Radius.circular(10),
-        ),
-      ),
-      hintText: 'Raza',
-      labelText: 'Raza',
-    ),
-              ),
-              SizedBox(height: 15,),
-              Text('Contacto'),
-              TextFormField(
-                controller: contact,
-                decoration: const InputDecoration(
-        border: OutlineInputBorder(
-        borderRadius: BorderRadius.all(
-        Radius.circular(10),
-        ),
-      ),
-      hintText: 'Contacto',
-      labelText: 'Contacto',
-    ),
-              ),
-              SizedBox(height: 15,),
-               Row(
-                    children: [
-                      
-                      TextButton(
-                        style: TextButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 97, 97, 97),
-                    //Color.fromARGB(255, 246, 148, 171),
-                    foregroundColor: Color.fromARGB(255, 29, 4, 4),
-                    padding: const EdgeInsets.all(16.0),
-                    textStyle: const TextStyle(fontSize: 20),
-                  ),
-                        onPressed: ()async {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: ((builder) => bottomSheet()),
-                        );
-            }, child: Text('Subir imagen')),
-            Expanded(child: Text(url ?? ''
-            )),
-                    ],
-                      ),
-              SizedBox(height: 15,),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 205, 153, 207),//colorApp.getColorBar(),
-                    //Color.fromARGB(255, 246, 148, 171),
-                    foregroundColor: Color.fromARGB(255, 255, 255, 255),
-                  ),
-                  onPressed: () async{
-                    if (image.value != null) {  
-                          final uploaded = await loadImage(File(image.value!.path));
-                          if (uploaded) {
-                            flag.setFlagListPost();
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                content: Text('Imagen subida correctamente')));
-                                 _firebase.insPost({
-                        'name': name.text,
-                        'image': url.toString(),
-                        'age': age.text,
-                        'talla': talla.text,
-                        'raza': raza.text,
-                        'Sexo': sexo.text,
-                        'contact': contact.text,
-                              }).then((value) {
-                        Navigator.pop(context);
-                      });
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              content: Text('Error al subir la imagen')));
-                            }
-                        }
-                    //loadImage(File(image.value!.path));
-                     /* _firebase.insPost({
-                        'name': name.text,
-                        'image': url.toString(),
-                        'age': age.text,
-                        'talla': talla.text,
-                        'raza': raza.text,
-                        'Sexo': sexo.text,
-                              })
-                        .then((value) {
-                          /*value > 0
-                            ? 'Registro insertado'
-                            : 'Ocurrió un error';
-                        var snackBar = SnackBar(content: Text(msj));*/
-                        Navigator.pop(context);
-                        //ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                      });*/
-                   
-                    
-                    flag.setFlagListPost();
-                  },
-                  child: const Text('Save'))
-            ],
+              hintText: 'Contacto',
+              labelText: 'Contacto',
+            ),
+                ),
+                SizedBox(height: 15,),
+                 Row(
+                      children: [
+                        
+                        TextButton(
+                          style: TextButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 97, 97, 97),
+                      //Color.fromARGB(255, 246, 148, 171),
+                      foregroundColor: Color.fromARGB(255, 29, 4, 4),
+                      padding: const EdgeInsets.all(16.0),
+                      textStyle: const TextStyle(fontSize: 20),
+                    ),
+                          onPressed: ()async {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: ((builder) => bottomSheet()),
+                          );
+              }, child: Text('Subir imagen')),
+              Expanded(child: Text(url ?? ''
+              )),
+                      ],
+                        ),
+                SizedBox(height: 15,),
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(255, 134, 5, 139),//colorApp.getColorBar(),
+                      //Color.fromARGB(255, 246, 148, 171),
+                      foregroundColor: Color.fromARGB(255, 255, 255, 255),
+                    ),
+                    onPressed: () async{
+                      if (image.value != null) {  
+                            final uploaded = await loadImage(File(image.value!.path));
+                            if (uploaded) {
+                              flag.setFlagListPost();
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  content: Text('Imagen subida correctamente')));
+                                   _firebase.insPost({
+                                    'id':(Random().nextInt(100) + 50).toString(),
+                          'name': name.text,
+                          'image': url.toString(),
+                          'age': age.text,
+                          'talla': talla.text,
+                          'raza': raza.text,
+                          'Sexo': sexo.text,
+                          'contact': contact.text,
+                                }).then((value) {
+                          Navigator.pop(context);
+                        });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Error al subir la imagen')));
+                              }
+                          }
+        
+                      flag.setFlagListPost();
+                    },
+                    child: const Text('Save'))
+              ],
+            ),
           ),
         ),
       ),

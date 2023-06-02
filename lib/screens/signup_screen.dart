@@ -143,8 +143,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                spaceHorizont,
-                imageProfile(),
+                //spaceHorizont,
+                //imageProfile(),
                 spaceHorizont,
                 spaceHorizont,
                 TextFormField(
@@ -274,7 +274,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 15,),
                 const Text('Or'),
                 const SizedBox(height: 15,),
-                SocialLoginButton(
+                /*SocialLoginButton(
                   buttonType: SocialLoginButtonType.google, onPressed: () 
                    async{
         isLoading=true;
@@ -310,7 +310,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           setState(() {});
         });
       },
-    )
+    )*/
 
               ],
             ),

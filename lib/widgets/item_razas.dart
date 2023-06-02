@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -42,9 +43,11 @@ class _ItemBreedState extends State<ItemBreed> {
                 width: 50,
                     fit: BoxFit.fill,
                     placeholder: const AssetImage('assets/loading1.gif'),
-                    image: NetworkImage(
-                        "https://cdn2.thedogapi.com/images/${widget.popularModel.reference_image_id}.jpg"),
-                    ),
+                    image: CachedNetworkImage(imageUrl: "https://cdn2.thedogapi.com/images/${widget.popularModel.reference_image_id}.jpg") as ImageProvider
+                    //NetworkImage( "https://cdn2.thedogapi.com/images/${widget.popularModel.reference_image_id}.jpg" ,),
+                        //"https://cdn2.thedogapi.com/images/${widget.popularModel.reference_image_id}.jpg"),
+                  
+              ),
           )),
               Row(
                 children: [
@@ -86,7 +89,7 @@ class _ItemBreedState extends State<ItemBreed> {
                                 _firebase.inssubs({
                                     'id':widget.popularModel.id,
                                     'name': widget.popularModel.name,
-                                    'image': "https://cdn2.thedogapi.com/images/${widget.popularModel.reference_image_id}.jpg",
+                                    'reference_image_id': "${widget.popularModel.reference_image_id}",
                                     'origin':widget.popularModel.origin,
                                     'bred_for':widget.popularModel.bred_for})
                                     .then((value) => flag.setFlagListPost());

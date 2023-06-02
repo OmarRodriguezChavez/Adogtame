@@ -70,13 +70,5 @@ class SubsFirebase {
     
   }
 
-  /*Future<bool> searchPopular(String id_popular) async {
-    var conexion = await _subsCollection;
-    var query = "SELECT * FROM subs where id=?";
-    var result = await conexion.  _subsCollection.noSuchMethod(invocation);//_subsCollection!.where('id', isEqualTo: id_popular).snapshots();
-    if (result != null) {
-      return true;
-    }
-    return false;
-  }*/
+ 
 }

@@ -99,10 +99,11 @@ class _EditProfileState extends State<EditProfile> {
                             })),
                           
                           
-                          IconButton(onPressed: (){
-                            AlertDialog alert = AlertDialog(
+    IconButton(onPressed: (){
+      AlertDialog alert = AlertDialog(
       title: Text("Change Name"),
-      content: TextFormField(
+      content: Expanded(child: 
+      TextFormField(
         controller: newn,
         decoration: const InputDecoration(
         border: OutlineInputBorder(
@@ -114,6 +115,8 @@ class _EditProfileState extends State<EditProfile> {
       labelText: 'New Name',
     ),
   ),
+      ),
+      
       actions: [
         ElevatedButton(
       child: Text("Cancelar"),
@@ -142,11 +145,12 @@ class _EditProfileState extends State<EditProfile> {
         ),
       ),
       onPressed: () {
-        FirebaseAuth.instance.currentUser!.updateDisplayName(newn.text);
-        print("Eliminando..");
-        flag.setFlagListPost();
-        cname.value = !cname.value;
         Navigator.of(context).pop();
+        setState(() {
+          FirebaseAuth.instance.currentUser!.updateDisplayName(newn.text);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                content: Text('Nombre actualizado correctamente')));
+        });
         // Otras acciones de eliminar
       },
     ),
@@ -158,7 +162,6 @@ class _EditProfileState extends State<EditProfile> {
         return alert;
       },
     );
-         
                           }, icon: Icon(Icons.edit))
                         ],
                       ),
@@ -174,7 +177,6 @@ class _EditProfileState extends State<EditProfile> {
                       TextButton(
                         style: TextButton.styleFrom(
                     backgroundColor: Color.fromARGB(255, 205, 153, 207),
-                    //Color.fromARGB(255, 246, 148, 171),
                     foregroundColor: Color.fromARGB(255, 29, 4, 4),
                     padding: const EdgeInsets.all(16.0),
                     textStyle: const TextStyle(fontSize: 20),

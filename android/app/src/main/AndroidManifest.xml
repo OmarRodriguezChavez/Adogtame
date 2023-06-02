@@ -16,6 +16,10 @@
         android:excludeFromRecents="true"
         android:exported="false"
         android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notification_icon" />
 
         <activity
             android:name=".MainActivity"

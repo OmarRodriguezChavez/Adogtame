@@ -10,8 +10,7 @@ class VerifyEmail extends StatefulWidget {
 }
 
 class _VerifyEmailState extends State<VerifyEmail> {
-  ValueNotifier<bool> ver=ValueNotifier<bool>(false);
-  User? user;
+  User? user; 
   @override
   void initState() {
     super.initState();
@@ -20,8 +19,6 @@ class _VerifyEmailState extends State<VerifyEmail> {
 void resendEmailVerification() {
     user?.sendEmailVerification();
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,24 +28,12 @@ void resendEmailVerification() {
         Text('Verifica la cuenta desde el link enviado a '+user!.email!),
         SizedBox(height: 15,),
         TextButton(onPressed: (){
-          resendEmailVerification();
+          //resendEmailVerification();
+          FirebaseAuth.instance.currentUser!.sendEmailVerification();
         }, child: Text('Reenviar código', style: TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.overline),) ),
-        ValueListenableBuilder(valueListenable: ver, builder: (context, value, child){
-          return TextButton(onPressed: (){
-            ver.value=FirebaseAuth.instance.currentUser!.emailVerified;
-            ver.value !=false
-          ? Navigator.pushNamed(context, '/dash')
-          : Navigator.pushNamed(context, '/verify');
-          }, child: Text('Go to home'));
-        }),
-        /*TextButton(onPressed: 
-        (){
-          FirebaseAuth.instance.currentUser!.emailVerified
-          ? Navigator.pushNamed(context, '/dash')
-          : Navigator.pushNamed(context, '/dash');
-
-        }, child: Text('Go to home'))*/
-      
+        TextButton(onPressed: () {
+          Navigator.pushNamed(context, '/login');
+          }, child: Text('Sign In'))
       ]),
     );
   }

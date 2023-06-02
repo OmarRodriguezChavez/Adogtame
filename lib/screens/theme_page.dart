@@ -14,6 +14,11 @@ class ThemeChoose extends StatefulWidget {
 }
 
 class _ThemeChooseState extends State<ThemeChoose> {
+
+  void _toggleTheme(theme) {
+    final settings = Provider.of<ThemeProvider>(context, listen: false);
+    settings.toggleTheme(theme);
+  }
   final texto = const Text(
     "Elige un tema",
     style: TextStyle(
@@ -39,7 +44,7 @@ class _ThemeChooseState extends State<ThemeChoose> {
         textStyle: const TextStyle(fontSize: 20),
       ),
       onPressed: () {
-        theme.setthemeData(1, context);
+        _toggleTheme('dark');
       },
       child: const Text("Dark Theme"),
     );
@@ -51,143 +56,44 @@ class _ThemeChooseState extends State<ThemeChoose> {
         textStyle: const TextStyle(fontSize: 20),
       ),
       onPressed: () {
-        theme.setthemeData(2, context);
+        _toggleTheme('light');
       },
       child: const Text("Light Theme"),
     );
-    /*final btnGreen = ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(15),
-          backgroundColor: Colors.green),
-      child: const Icon(
-        Icons.edit,
-        size: 30,
+    final btnrose = TextButton(
+      style: TextButton.styleFrom(
+        backgroundColor: Color.fromARGB(255, 225, 168, 231),
+        foregroundColor: Color.fromARGB(255, 0, 0, 0),
+        padding: const EdgeInsets.all(16.0),
+        textStyle: const TextStyle(fontSize: 20),
       ),
       onPressed: () {
-        colorApp.setColorBar('green', context);
+        _toggleTheme('obscure');
       },
+      child: const Text("Rose Theme"),
     );
-    final btnRed = ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(15),
-          backgroundColor: Colors.red),
-      child: const Icon(
-        Icons.edit,
-        size: 30,
-      ),
-      onPressed: () {
-        colorApp.setColorBar('red', context);
-      },
-    );
-    final btnYellow = ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(15),
-          backgroundColor: Colors.yellow),
-      child: const Icon(
-        Icons.edit,
-        size: 30,
-      ),
-      onPressed: () {
-        colorApp.setColorBar('yellow', context);
-      },
-    );
-    final btnPink = ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(15),
-          backgroundColor: Colors.pink),
-      child: const Icon(
-        Icons.edit,
-        size: 30,
-      ),
-      onPressed: () {
-        colorApp.setColorBar('pink', context);
-      },
-    );
-    final btnPurple = ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(15),
-          backgroundColor: Colors.purple),
-      child: const Icon(
-        Icons.edit,
-        size: 30,
-      ),
-      onPressed: () {
-        colorApp.setColorBar('purple', context);
-      },
-    );
-    final btnBlue = ElevatedButton(
-      style: ElevatedButton.styleFrom(
-          shape: const CircleBorder(),
-          padding: const EdgeInsets.all(15),
-          backgroundColor: Colors.blue),
-      child: const Icon(
-        Icons.edit,
-        size: 30,
-      ),
-      onPressed: () {
-        colorApp.setColorBar('blue', context);
-      },
-    );*/
+    
 
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Choose Theme'),
-          backgroundColor: Colors.amber,),//colorApp.getColorBar()),
-      body: Container(
+          title: const Text('Choose Theme'),),
+      body:  Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            texto,
-            spaceHorizont,
-            Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  //mainAxisSize: MainAxisSize.max
-                  children: [
-                    btndark,
-                    btnlight,
-                  ],
-                )),
-            spaceHorizont,
-            const Text(
-              "Selecciona un color",
-              style: TextStyle(
-                backgroundColor: Color.fromARGB(123, 223, 187, 80),
-                color: Colors.black,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            spaceHorizont,
-            /*Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    btnGreen,
-                    btnBlue,
-                    btnRed,
-                  ],
-                )),
-            Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    btnPink,
-                    btnPurple,
-                    btnYellow,
-                  ],
-                )),*/
-          ],
-        ),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              texto,
+              spaceHorizont,
+              btndark,
+                      SizedBox(height: 15,),
+                      btnlight,
+                      SizedBox(height: 15,),
+                      btnrose,
+              spaceHorizont,
+      
+            ],
+          ),
       ),
+      
     );
   }
 }

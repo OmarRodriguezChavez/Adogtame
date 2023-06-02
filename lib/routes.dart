@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:proyectofinal_cont_rdz/screens/add_post_screen.dart';
 import 'package:proyectofinal_cont_rdz/screens/dashboard_screen.dart';
 import 'package:proyectofinal_cont_rdz/screens/edit_profile_screen.dart';
+import 'package:proyectofinal_cont_rdz/screens/list_fav_post_screen.dart';
+import 'package:proyectofinal_cont_rdz/screens/list_fav_razas_screen.dart';
 import 'package:proyectofinal_cont_rdz/screens/list_razas_screen.dart';
 import 'package:proyectofinal_cont_rdz/screens/signin_screen.dart';
 import 'package:proyectofinal_cont_rdz/screens/theme_page.dart';
@@ -17,7 +19,8 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     '/logout': (BuildContext context) => DashboardScreen(),
     '/verify':(BuildContext context) =>const VerifyEmail(),
     '/login':(BuildContext context) => const SignInScreen(),
-    '/edit':(BuildContext context) => const EditProfile()
+    '/edit':(BuildContext context) => const EditProfile(),
+    '/favs':(BuildContext context) => const ListFavBreeds()
    
   };
 }

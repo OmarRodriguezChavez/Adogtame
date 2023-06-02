@@ -76,8 +76,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 currentAccountPicture: CircleAvatar(
                   
                   backgroundImage: FirebaseAuth.instance.currentUser!.photoURL !=null//user?.photoUrl != null
-                  ? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!)
-                  : AssetImage('assets/avatar.png') as ImageProvider,
+                    ? CachedNetworkImage(imageUrl: FirebaseAuth.instance.currentUser!.photoURL!)as ImageProvider
+                    : AssetImage('assets/avatar.png') as ImageProvider,
+                  /*? NetworkImage(FirebaseAuth.instance.currentUser!.photoURL!)
+                  : AssetImage('assets/avatar.png') as ImageProvider,*/
                 ),
                accountName: Text(FirebaseAuth.instance.currentUser!.displayName!),//Text(_credentials),//Text(user!.name.toString()),
                 accountEmail:Text(FirebaseAuth.instance.currentUser!.email!));}),//Text(_mail)),// Text(user!.email.toString())),
@@ -101,17 +103,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             ListTile(
               onTap: () {
-                Navigator.pushNamed(context, '/save');
+                Navigator.pushNamed(context, '/favs');
               },
-              title: const Text('Guardado'),
-              leading: const Icon(Icons.save_alt),
+              title: const Text('Mis Suscripciones'),
+              leading: const Icon(Icons.favorite_border),
               trailing: const Icon(Icons.chevron_right),
             ),
             ListTile(
               onTap: () {
                 Navigator.pushNamed(context, '/cat');
               },
-              title: const Text('Categorias'),
+              title: const Text('Razas'),
               leading: const Icon(Icons.category),
               trailing: const Icon(
                 Icons.chevron_right,

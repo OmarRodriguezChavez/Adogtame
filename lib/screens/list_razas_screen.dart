@@ -32,7 +32,7 @@ class _ListBreedsState extends State<ListBreeds> {
     FlagsProvider flag = Provider.of<FlagsProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,//colorApp.getColorBar(),
+        //backgroundColor: Colors.amber,//colorApp.getColorBar(),
         title: const Text('List Popular'),
       ),
       body: FutureBuilder(

@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PostFirebase {
+class FavFirebase {
   FirebaseFirestore _firebase = FirebaseFirestore.instance;
   CollectionReference? _postCollection;
 
-  PostFirebase() {
-    _postCollection = _firebase.collection('dogs');
+  FavFirebase() {
+    _postCollection = _firebase.collection('favs');
   }
 
   Future<void> insPost(Map<String, dynamic> map) async {
@@ -17,7 +17,7 @@ class PostFirebase {
   }
 
   Future<void> delPost(String id) async {
-     try {
+    try {
       await _firebase!.runTransaction((transaction) async {
         final querySnapshot =
             await _postCollection!.where('id', isEqualTo: id).get();

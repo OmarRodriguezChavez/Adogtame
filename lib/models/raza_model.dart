@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class BreedModel {
   int? id;
   String? name;
@@ -33,5 +35,27 @@ class BreedModel {
       'reference_image_id':reference_image_id,
       'bred_for':bred_for
     };
+  }
+
+
+
+   factory BreedModel.fromQuerySnapshot(QueryDocumentSnapshot document){
+    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+    return BreedModel(
+      id: data['id'],
+      name: data['name'],
+      origin: data['origin'],
+      reference_image_id:data ['reference_image_id'],
+      bred_for: data['bred_for']
+      /*originalLanguage: data['original_language'],
+      originalTitle: data['original_title'],
+      overview: data['overview'],
+      popularity: data['popularity'],
+      posterPath: data['poster_path'],
+      releaseDate: data['release_date'],
+      title: data['title'],
+      voteAverage: data['vote_average'],
+      voteCount: data['vote_count'],*/
+    );
   }
 }

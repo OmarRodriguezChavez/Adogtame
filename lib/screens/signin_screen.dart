@@ -67,30 +67,18 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 5,
                 ),
                 forgetPassword(context),
-                firebaseUIButton(context, "Sign In", () {
-                  FirebaseAuth.instance
+                firebaseUIButton(context, "Sign In", ()async {
+                  var ban = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: _emailTextController.text,
-                          password: _passwordTextController.text).then((value){
-                          //user!.emailVerified 
-                          /*?*/ Navigator.pushNamed(context, '/dash');
-                          //: Navigator.pushNamed(context, '/verify');}).onError((error, stackTrace) {
-                            //print("Error ${error.toString()}");
-                          });
+                          password: _passwordTextController.text);
+                           if (ban.user?.emailVerified ?? false) {
+                  Navigator.pushNamed(context, '/dash');
+                } else {
+                  Navigator.pushNamed(context, '/verify');
+
+                }
                           
-                          /*if(user!.emailVerified)
-                          {
-                             Navigator.pushNamed(context, '/dash');
-                          }
-                          else{
-                            Navigator.pushNamed(context, '/verify');
-                          })*/
-                     /*.then((value) {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SignInScreen()));
-                  }).onError((error, stackTrace) {
-                    print("Error ${error.toString()}");
-                  });*/
                 }),
                 signUpOption(),
                 const SizedBox(
@@ -177,20 +165,4 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
-  /*Future<UserCredential> signInWithFacebook() async {
-    // Trigger the sign-in flow
-    final LoginResult loginResult = await FacebookAuth.instance.login(
-      permissions: ['email', 'public_profile', 'user_birthday']
-    );
-
-    // Create a credential from the access token
-    final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
-
-    final userData = await FacebookAuth.instance.getUserData();
-
-    userEmail = userData['email'];
-
-    // Once signed in, return the UserCredential
-    return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-  }*/
 }
